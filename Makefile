@@ -1,5 +1,5 @@
 MODULE = scx
-VERSION = 0.1
+VERSION = 0.2
 GEN = gen
 BIN = bin
 ETC = etc

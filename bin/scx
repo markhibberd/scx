@@ -7,8 +7,7 @@
 #
 
 usage() {
-#  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] [-x|--x-compile SCALAC] <src-directory> <trg-directory>"
-  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] <src-directory> <trg-directory>"
+  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] [-x|--x-compile SCALAC] <src-directory> <trg-directory>"
 }
 
 while echo $1 | grep -q '^-'; do
@@ -22,10 +21,10 @@ while echo $1 | grep -q '^-'; do
     JAVA=true
     JAVA_VERSION=$1
     ;;
-#  -x|--x-compile)
-#    shift
-#    SCALACS="$SCALA_HOME $1"
-#    ;;
+  -x|--x-compile)
+    shift
+    SCALACS="$SCALA_HOME $1"
+    ;;
   --)
     shift
     break
