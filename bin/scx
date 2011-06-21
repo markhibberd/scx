@@ -7,7 +7,8 @@
 #
 
 usage() {
-  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] [-x|--x-compile SCALAC] <src-directory> <trg-directory>"
+#  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] [-x|--x-compile SCALAC] <src-directory> <trg-directory>"
+  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] <src-directory> <trg-directory>"
 }
 
 while echo $1 | grep -q '^-'; do
@@ -21,10 +22,10 @@ while echo $1 | grep -q '^-'; do
     JAVA=true
     JAVA_VERSION=$1
     ;;
-  -x|--x-compile)
-    shift
-    SCALACS="$SCALA_HOME $1"
-    ;;
+#  -x|--x-compile)
+#    shift
+#    SCALACS="$SCALA_HOME $1"
+#    ;;
   --)
     shift
     break
@@ -53,7 +54,7 @@ fi
 : ${SOURCE_LIST:=$TRG_DIR/.scx.$$}
 : ${JAVA_SOURCE_LIST:=$TRG_DIR/.scx.java.$$}
 : ${CLASSPATH:=.}
-: ${SCALACS:=`which scalac`}
+#: ${SCALACS:=`which scalac`}
 
 find "$SRC_DIR" -name "*.scala" > "$SOURCE_LIST"
 
