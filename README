@@ -5,7 +5,11 @@ DESCRIPTION
         t.b.d
 
 USAGE
-	t.b.d.
+        Compile scala only:
+            scx -cp lib src classes
+
+        Compile scala and java:
+            scx -j -cp lib src classes
  
 STATE
         The `scx` executable is under development.
