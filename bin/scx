@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# scx - a scala compilation utility with support for cross compilation
+#
+# http://scx.mth.io
+# https://github.com/markhibberd/scx
+#
+
+usage() {
+  echo "usage: `basename $0` [-j|--java] [-cp|-classpath CLASSPATH] [-x|--x-compile SCALAC] <src-directory> <trg-directory>"
+}
+
+while echo $1 | grep -q '^-'; do
+  case $1 in
+  -cp|-classpath) 
+    shift
+    CLASSPATH="$1"
+    ;;
+  -j|--java)
+    FIND_JAVA="-o -name *.java"
+    ;;
+  -x|--x-compile)
+    shift
+    SCALACS="$SCALA_HOME $1"
+  --)
+    shift
+    break
+    ;;
+  *)
+    echo "Unknown flag [$1]" 1>&2
+    usage 2>&1
+    ;;
+  esac
+  shift
+done
+
+if [ $# -ne 2 ]; then
+  usage 1>&2  
+  exit 1
+fi
+
+SRC_DIR="$1"
+TRG_DIR="$2"
+
+if [ ! -d "$TRG_DIR" ]; then
+  echo "target directory [$TRG_DIR] does not exists." 1>&2
+  exit 10
+fi
+
+: ${SOURCE_LIST:=$TRG_DIR/.scx.$$}
+: ${CLASSPATH:=.}
+: ${SCALACS:=`which scalac`}
+
+find "$SRC_DIR" -name "*.scala" $FIND_JAVA > "$SOURCE_LIST"
+
+infer_version() {
+  scalac -version 2>&1 | sed  -e 's/Scala compiler version \([0-9.a-z]*\).*/\1/'
+}
+
+for $SCALAC in $SCALACS; do
+
+done
+
+VERSION=`infer_version`
+
+mkdir -p "$TRG_DIR/$VERSION"
+scalac -classpath "$CLASSPATH" -d "$TRG_DIR/$VERSION" @"$SOURCE_LIST"
+
