@@ -1,0 +1,12 @@
+#/bin/sh
+
+dir=`dirname $0`
+scx=$dir/../../bin/scx
+
+mkdir -p "$dir/classes/lib"
+mkdir -p "$dir/classes/src"
+
+$scx "$dir/src.lib" "$dir/classes/lib"
+$scx -cp "$dir/classes/lib/2.8.1.final" "$dir/src" "$dir/classes/src"
+
+
