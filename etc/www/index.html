@@ -67,13 +67,41 @@
     Compile scala and java:
     </p>
     <pre>
-    scx -j -cp lib src classes
+    scx -j 1.5 -cp lib src classes
+    </pre>
+
+    <p>
+    Cross-compile scala only:
+    </p>
+    <pre>
+    scx -j 1.5 -cp lib/allversions src classes &lt;&lt;EOF
+    2.8.1/bin/scalac 2.8.1 lib/2.8.1
+    2.9.0/bin/scalac 2.9.0 lib/2.9.0
+    EOF
+    </pre>
+
+    <p>
+    Cross-compile scala and java:
+    </p>
+    <pre>
+    scx -j 1.5 -cp lib/allversions src classes &lt;&lt;EOF
+    2.8.1/bin/scalac 2.8.1 lib/2.8.1
+    2.9.0/bin/scalac 2.9.0 lib/2.9.0
+    EOF
     </pre>
 
     <h2>installation</h2>
     
     <p>
       scx is a single shell script. Just put it on your path and you are done.
+    </p>
+
+    <h2>state</h2>
+
+    <p>
+        The <code>scx</code> executable is stable and in use. There are only minor
+        features and bug fixes planned for this package. All future
+        releases shall endeavour to be backward compatible.
     </p>
 
     <h2>release</h2>

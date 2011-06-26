@@ -11,15 +11,24 @@ USAGE
             scx -cp lib src classes
 
         Compile scala and java:
-            scx -j -cp lib src classes
+            scx -j 1.5 -cp lib src classes
+
+        Cross-compile scala only:
+            scx -cp lib/allversions src classes <<EOF
+            2.8.1/bin/scalac 2.8.1 lib/2.8.1
+            2.9.0/bin/scalac 2.9.0 lib/2.9.0
+            EOF
+
+        Cross-compile scala and java:
+            scx -j 1.5 -cp lib/allversions src classes <<EOF
+            2.8.1/bin/scalac 2.8.1 lib/2.8.1
+            2.9.0/bin/scalac 2.9.0 lib/2.9.0
+            EOF
  
 STATE
-        The `scx` executable is under development, but command line options
-	shall be backward compatible in future releases.
-
-LIMITATIONS
-        scx has no direct support for cross compilation between scala versions,
-	this is planned for version 1.0.
+        The `scx` executable is stable and in use. There are only minor
+        features and bug fixes planned for this package. All future
+        releases shall endeavour to be backward compatible.
 
 AUTHOR
         Mark Hibberd <mark@hibberd.id.au>
