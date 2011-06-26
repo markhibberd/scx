@@ -89,15 +89,15 @@ compile() {
     fi
 
     "$SCALAC" -classpath "$CLASSPATH" -d "$TARGET" @"$SOURCE_LIST" || return $?
+
     if [ x"$JAVA" = xtrue ]; then
         if ! type "javac" > /dev/null 2>&1; then
             echo "Could not find javac [javac]." 1>&2
             exit 21
         fi
-        javac -classpath "$CLASSPATH":"$TARGET" \
-              -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
-              -d "$TARGET" @"$JAVA_SOURCE_LIST" || return $?
+        javac -classpath "$CLASSPATH":"$TARGET" -source "$JAVA_VERSION" -target "$JAVA_VERSION" -d "$TARGET" @"$JAVA_SOURCE_LIST" || return $?
     fi
+
     return 0
 }
 
