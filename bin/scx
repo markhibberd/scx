@@ -28,7 +28,7 @@ while echo $1 | grep -q '^-'; do
   case $1 in
   -cp|-classpath) 
     shift
-    CLASSPATH="$1"
+    CLASSPATH=$1
     ;;
   -j|--java)
     shift
@@ -98,5 +98,11 @@ if [ x"$XCOMPILE" = xtrue ]; then
         compile "$SCALAC" "$CLASSPATH:$XCLASSPATH" "$TRG_DIR/$VERSION" || exit $?
     done
 else
-    compile scalac "$CLASSPATH" "$TRG_DIR" 
+    compile scalac "$CLASSPATH" "$TRG_DIR" || exit $?
 fi
+
+# intentionally only cleanup on success, useful for debugging.
+rm "$SOURCE_LIST"
+[ x"$JAVA" = xtrue ] && rm "$JAVA_SOURCE_LIST"
+
+exit 0

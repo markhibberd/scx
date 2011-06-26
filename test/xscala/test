@@ -3,6 +3,8 @@
 dir=`dirname $0`
 scx="$dir/../../bin/scx"
 
+[ -d "$dir/classes" ] && rm -rf "$dir/classes"
+
 mkdir -p "$dir/classes/lib"
 mkdir -p "$dir/classes/src"
 
@@ -13,9 +15,9 @@ $HOME/lib/scala/2.9.0/bin/scalac 2.9.0
 EOF
 $scx -cp "$dir/classes/lib/2.8.1.final" -x - "$dir/src" "$dir/classes/src" <<EOF
 # blank lines
-$HOME/lib/scala/2.8.1/bin/scalac 2.8.1 
+$HOME/lib/scala/2.8.1/bin/scalac 2.8.1 $dir/classes/lib/2.8.1 
 
-$HOME/lib/scala/2.9.0/bin/scalac 2.9.0
+$HOME/lib/scala/2.9.0/bin/scalac 2.9.0 $dir/classes/lib/2.9.0
 
 EOF
 

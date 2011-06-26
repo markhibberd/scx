@@ -1,0 +1,16 @@
+#!/bin/sh
+
+for test in java scala xscala glob; do
+    (
+	cd `dirname $0`/$test
+        ./test
+    ) 
+    if [ $? -ne 0 ]; then
+        echo "[$test] failed."
+	exit 1
+    else
+	echo "[$test] passed."
+    fi
+done
+
+exit 0

@@ -12,7 +12,7 @@ HASH_TAR = ${TAR}.sha1
 PUBLISH_WWW = web@mth.io:${MODULE}.mth.io/data
 PUBLISH_RELEASE = web@mth.io:${MODULE}.mth.io/data/release/.
 
-.PHONY: clean dist release publish www
+.PHONY: test clean dist release publish www
 
 default: release
 
@@ -23,6 +23,9 @@ ${TAR}: ${DIST}
 
 ${HASH_TAR}: ${TAR}
 	${HASH} ${TAR} > ${HASH_TAR}
+
+test:
+	test/run
 
 dist: clean ${TAR}
 

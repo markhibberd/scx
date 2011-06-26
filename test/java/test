@@ -1,11 +1,13 @@
 #/bin/sh
 
 dir=`dirname $0`
-scx="sh -x $dir/../../bin/scx"
+scx="$dir/../../bin/scx"
+
+[ -d "$dir/classes" ] && rm -rf "$dir/classes"
 
 mkdir -p "$dir/classes/lib"
 mkdir -p "$dir/classes/src"
 
 $scx -j 1.5 "$dir/src.lib" "$dir/classes/lib"
-$scx -j 1.5  -cp "$dir/classes/lib/2.8.1.final" "$dir/src" "$dir/classes/src"
+$scx -j 1.5  -cp "$dir/classes/lib" "$dir/src" "$dir/classes/src"
 
