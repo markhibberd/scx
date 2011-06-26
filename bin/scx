@@ -82,9 +82,18 @@ compile() {
     TARGET="$3"
 
     mkdir -p "$TARGET"
-    
+
+    if ! type "$SCALAC" > /dev/null 2>&1; then
+        echo "Could not find scala [$SCALA]." 1>&2
+        exit 20
+    fi
+
     "$SCALAC" -classpath "$CLASSPATH" -d "$TARGET" @"$SOURCE_LIST" || return $?
     if [ x"$JAVA" = xtrue ]; then
+        if ! type "javac" > /dev/null 2>&1; then
+            echo "Could not find javac [javac]." 1>&2
+            exit 21
+        fi
         javac -classpath "$CLASSPATH":"$TARGET" \
               -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
               -d "$TARGET" @"$JAVA_SOURCE_LIST" || return $?
@@ -95,8 +104,12 @@ compile() {
 
 if [ x"$XCOMPILE" = xtrue ]; then
     cat $XCONFIG | sed -e '/^$/d' | grep -v '^#' | while read SCALAC VERSION XCLASSPATH; do
+	if [ -z "$VERSION" ]; then
+            echo "Version tag must be specified for cross-compile target." 1>&2
+            exit 22
+	fi
         compile "$SCALAC" "$CLASSPATH:$XCLASSPATH" "$TRG_DIR/$VERSION" || exit $?
-    done
+    done || exit $?
 else
     compile scalac "$CLASSPATH" "$TRG_DIR" || exit $?
 fi
