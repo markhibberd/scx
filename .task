@@ -1,0 +1,2 @@
+Make sure output is as quiet as possible
+Add some validation around reading of XCONFIG

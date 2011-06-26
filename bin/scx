@@ -1,13 +1,27 @@
 #!/bin/sh
 #
 # scx - a scala compilation utility with support for cross compilation
-#
-# http://scx.mth.io
-# https://github.com/markhibberd/scx
+# 
+# [project]     http://scx.mth.io
+# [source]      https://github.com/markhibberd/scx
+# [license]     3 point BSD 
+#               https://github.com/markhibberd/scx/blob/master/LICENSE
 #
 
 usage() {
-  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] [-x|--x-compile SCALAC] <src-directory> <trg-directory>"
+  echo "usage: `basename $0` [-j|--java VERSION] [-cp|-classpath CLASSPATH] [-x|--x-compile CONFIG] <src-directory> <trg-directory>"
+  echo "  -j, --java VERSION           Include java source in compilation, using"
+  echo "                               VERSION for both source and target flags of"
+  echo "                               javac. The javac executable will be selected"
+  echo "                               from PATH."
+  # Left stupid for hysterical raisons and to be somewhat consistent with javac/scalac behaviour.
+  # Fuck you jvm, fuck you and you stupid argument conventions. 
+  echo " -cp, -classpath CLASSPATH     Specify the classpath, identical behaviour to"
+  echo "                               scalac / javac -cp/-classpath, including globbing."
+  echo " -x, --x-compile CONFIG        Specify cross compile. The compiler map is read from"
+  echo "                               the config file, or if the config file is '-', then it"
+  echo "                               is read from standard input. The config format:"
+  echo "                                   SCALAC VERSION CLASSPATH"
 }
 
 while echo $1 | grep -q '^-'; do
@@ -23,7 +37,8 @@ while echo $1 | grep -q '^-'; do
     ;;
   -x|--x-compile)
     shift
-    SCALACS="$SCALA_HOME $1"
+    XCOMPILE=true
+    XCONFIG=$1
     ;;
   --)
     shift
@@ -53,25 +68,33 @@ fi
 : ${SOURCE_LIST:=$TRG_DIR/.scx.$$}
 : ${JAVA_SOURCE_LIST:=$TRG_DIR/.scx.java.$$}
 : ${CLASSPATH:=.}
-#: ${SCALACS:=`which scalac`}
 
 find "$SRC_DIR" -name "*.scala" > "$SOURCE_LIST"
 
-if [ x"$JAVA" = x"true" ]; then
+if [ x"$JAVA" = xtrue ]; then
   find "$SRC_DIR" -name "*.java" > "$JAVA_SOURCE_LIST"
   cat "$JAVA_SOURCE_LIST" >> "$SOURCE_LIST"
 fi
 
-
-infer_version() {
-  scalac -version 2>&1 | sed  -e 's/Scala compiler version \([0-9.a-z]*\).*/\1/'
+compile() {
+    SCALAC="$1"
+    CLASSPATH="$2"
+    TARGET="$3"
+    
+    "$SCALAC" -classpath "$CLASSPATH" -d "$TARGET" @"$SOURCE_LIST" || return $?
+    if [ x"$JAVA" != xtrue ]; then
+        javac -classpath "$CLASSPATH":"$TARGET" \
+              -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
+              -d "$TARGET" @"$JAVA_SOURCE_LIST" || return $?
+    fi
+    return 0
 }
 
-VERSION=`infer_version`
 
-mkdir -p "$TRG_DIR/$VERSION"
-scalac -classpath "$CLASSPATH" -d "$TRG_DIR/$VERSION" @"$SOURCE_LIST"
-
-if [ x"$JAVA" = x"true" ]; then
-    javac -classpath "$CLASSPATH":"$TRG_DIR/$VERSION" -source $JAVA_VERSION -target $JAVA_VERSION -d "$TRG_DIR/$VERSION" @"$JAVA_SOURCE_LIST"
+if [ x"$XCOMPILE" = xtrue ]; then
+    cat $XCONFIG | while read SCALAC VERSION XCLASSPATH; do
+        compile "$SCALAC" "$CLASSPATH:$XCLASSPATH" "$TRG_DIR/$VERSION"
+    done
+else
+    compile scalac "$CLASSPATH" "$TRG_DIR" 
 fi
