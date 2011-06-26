@@ -1,0 +1,21 @@
+#/bin/sh
+
+dir=`dirname $0`
+scx="$dir/../../bin/scx"
+
+mkdir -p "$dir/classes/lib"
+mkdir -p "$dir/classes/src"
+
+$scx -x - "$dir/src.lib" "$dir/classes/lib" <<EOF
+$HOME/lib/scala/2.8.1/bin/scalac 2.8.1 
+# comment
+$HOME/lib/scala/2.9.0/bin/scalac 2.9.0
+EOF
+$scx -cp "$dir/classes/lib/2.8.1.final" -x - "$dir/src" "$dir/classes/src" <<EOF
+# blank lines
+$HOME/lib/scala/2.8.1/bin/scalac 2.8.1 
+
+$HOME/lib/scala/2.9.0/bin/scalac 2.9.0
+
+EOF
+

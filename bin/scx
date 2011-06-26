@@ -80,9 +80,11 @@ compile() {
     SCALAC="$1"
     CLASSPATH="$2"
     TARGET="$3"
+
+    mkdir -p "$TARGET"
     
     "$SCALAC" -classpath "$CLASSPATH" -d "$TARGET" @"$SOURCE_LIST" || return $?
-    if [ x"$JAVA" != xtrue ]; then
+    if [ x"$JAVA" = xtrue ]; then
         javac -classpath "$CLASSPATH":"$TARGET" \
               -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
               -d "$TARGET" @"$JAVA_SOURCE_LIST" || return $?
@@ -92,8 +94,8 @@ compile() {
 
 
 if [ x"$XCOMPILE" = xtrue ]; then
-    cat $XCONFIG | while read SCALAC VERSION XCLASSPATH; do
-        compile "$SCALAC" "$CLASSPATH:$XCLASSPATH" "$TRG_DIR/$VERSION"
+    cat $XCONFIG | sed -e '/^$/d' | grep -v '^#' | while read SCALAC VERSION XCLASSPATH; do
+        compile "$SCALAC" "$CLASSPATH:$XCLASSPATH" "$TRG_DIR/$VERSION" || exit $?
     done
 else
     compile scalac "$CLASSPATH" "$TRG_DIR" 
